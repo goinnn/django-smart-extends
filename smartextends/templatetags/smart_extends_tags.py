@@ -1,14 +1,17 @@
+import django
 from django.template import TemplateSyntaxError, TemplateDoesNotExist
 from django.template import Library
 from django.conf import settings
 
-from django.template.loader import template_source_loaders, find_template_loader, make_origin
+from django.template.loader import template_source_loaders, make_origin
 from django.template.loader_tags import ExtendsNode
+from django.utils.importlib import import_module
 
 register = Library()
 
-
+# Django 1.2
 def find_template(name, dirs=None, skip_template=None):
+    from django.template.loader import find_template_loader
     # Calculate template_source_loaders the first time the function is executed
     # because putting this logic in the module-level namespace may cause
     # circular import errors. See Django ticket #1292.
@@ -32,6 +35,42 @@ def find_template(name, dirs=None, skip_template=None):
             pass
     raise TemplateDoesNotExist(name)
 
+# Django 1.1
+def find_template_source(name, dirs=None, skip_template=None):
+    # Calculate template_source_loaders the first time the function is executed
+    # because putting this logic in the module-level namespace may cause
+    # circular import errors. See Django ticket #1292.
+    global template_source_loaders
+    if template_source_loaders is None:
+        loaders = []
+        for path in settings.TEMPLATE_LOADERS:
+            i = path.rfind('.')
+            module, attr = path[:i], path[i+1:]
+            try:
+                mod = import_module(module)
+            except ImportError, e:
+                raise ImproperlyConfigured, 'Error importing template source loader %s: "%s"' % (module, e)
+            try:
+                func = getattr(mod, attr)
+            except AttributeError:
+                raise ImproperlyConfigured, 'Module "%s" does not define a "%s" callable template source loader' % (module, attr)
+            if not func.is_usable:
+                import warnings
+                warnings.warn("Your TEMPLATE_LOADERS setting includes %r, but your Python installation doesn't support that type of template loading. Consider removing that line from TEMPLATE_LOADERS." % path)
+            else:
+                loaders.append(func)
+        template_source_loaders = tuple(loaders)
+    for loader in template_source_loaders:
+        try:
+            source, display_name = loader(name, dirs)
+            if skip_template:
+                if display_name == skip_template:
+                    continue
+            return (source, make_origin(display_name, loader, name, dirs))
+        except TemplateDoesNotExist:
+            pass
+    raise TemplateDoesNotExist, name
+
 
 class SmartExtendsNode(ExtendsNode):
 
@@ -43,10 +82,14 @@ class SmartExtendsNode(ExtendsNode):
     def render(self, context):
         source = self.source[0]
         if source.loadname == self.parent_name:
-            template = find_template(self.parent_name, skip_template=source.name)
-            template_source = template[0]
-            extends_tags = template_source.nodelist[0]
-            self.parent_name = extends_tags.source[0].name
+            if django.VERSION[0] == 1 and django.VERSION[1] <= 1:
+                template = find_template_source(self.parent_name, skip_template=source.name)
+                self.parent_name = template[1].name
+            else:
+                template = find_template(self.parent_name, skip_template=source.name)
+                template_source = template[0]
+                extends_tags = template_source.nodelist[0]
+                self.parent_name = extends_tags.source[0].name
         return super(SmartExtendsNode, self).render(context)
 
 
