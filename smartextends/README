@@ -56,3 +56,8 @@ file:admin/change_list.html
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="XXX" />
 {% endblock %}
+
+== Patches ==
+
+If you set TEMPLATE_DEBUG = True in settings.py you must patch django code. You can find the patch in the patches directoy. There are one patch for Django 1.1.X version and other for Django 1.2.
+
