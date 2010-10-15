@@ -39,7 +39,7 @@ Index: template/loader.py
          return LoaderOrigin(display_name, loader, name, dirs)
      else:
 -        return None
-+        return [LoaderOriginFake(display_name, loader, name, dirs)]
++        return LoaderOriginFake(display_name, loader, name, dirs)
  
  def find_template_loader(loader):
      if isinstance(loader, (tuple, list)):
