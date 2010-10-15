@@ -2,14 +2,29 @@ import django
 from django.template import TemplateSyntaxError, TemplateDoesNotExist
 from django.template import Library
 from django.conf import settings
-
+from django.template.loader import get_template_from_string
 from django.template.loader import template_source_loaders, make_origin
 from django.template.loader_tags import ExtendsNode
 from django.utils.importlib import import_module
 
 register = Library()
 
-# Django 1.2
+def get_template(template_name, skip_template=None):
+    """
+    Returns a compiled Template object for the given template name,
+    handling template inheritance recursively.
+    """
+    template, origin = find_template(template_name, skip_template=skip_template)
+    if not hasattr(template, 'render'):
+        # template needs to be compiled
+        template = get_template_from_string(template, origin, template_name)
+    return template
+
+def get_source(source):
+    if getattr(source, '__iter__', None):
+        source = source[0]
+    return source
+
 def find_template(name, dirs=None, skip_template=None):
     from django.template.loader import find_template_loader
     # Calculate template_source_loaders the first time the function is executed
@@ -23,53 +38,24 @@ def find_template(name, dirs=None, skip_template=None):
             if loader is not None:
                 loaders.append(loader)
         template_source_loaders = tuple(loaders)
+    template_candidate = None
     for loader in template_source_loaders:
         try:
             source, display_name = loader(name, dirs)
             if skip_template:
                 extends_tags = source.nodelist[0]
-                if extends_tags.source[0].name == skip_template:
+                if get_source(extends_tags.source).name == skip_template.name:
+                    template_candidate = None
                     continue
-            return (source, make_origin(display_name, loader, name, dirs))
-        except TemplateDoesNotExist:
-            pass
-    raise TemplateDoesNotExist(name)
-
-# Django 1.1
-def find_template_source(name, dirs=None, skip_template=None):
-    # Calculate template_source_loaders the first time the function is executed
-    # because putting this logic in the module-level namespace may cause
-    # circular import errors. See Django ticket #1292.
-    global template_source_loaders
-    if template_source_loaders is None:
-        loaders = []
-        for path in settings.TEMPLATE_LOADERS:
-            i = path.rfind('.')
-            module, attr = path[:i], path[i+1:]
-            try:
-                mod = import_module(module)
-            except ImportError, e:
-                raise ImproperlyConfigured, 'Error importing template source loader %s: "%s"' % (module, e)
-            try:
-                func = getattr(mod, attr)
-            except AttributeError:
-                raise ImproperlyConfigured, 'Module "%s" does not define a "%s" callable template source loader' % (module, attr)
-            if not func.is_usable:
-                import warnings
-                warnings.warn("Your TEMPLATE_LOADERS setting includes %r, but your Python installation doesn't support that type of template loading. Consider removing that line from TEMPLATE_LOADERS." % path)
+                if not template_candidate:
+                    template_candidate = (source, make_origin(display_name, loader, name, dirs))
             else:
-                loaders.append(func)
-        template_source_loaders = tuple(loaders)
-    for loader in template_source_loaders:
-        try:
-            source, display_name = loader(name, dirs)
-            if skip_template:
-                if display_name == skip_template:
-                    continue
-            return (source, make_origin(display_name, loader, name, dirs))
+                return (source, make_origin(display_name, loader, name, dirs))
         except TemplateDoesNotExist:
             pass
-    raise TemplateDoesNotExist, name
+    if not template_candidate:
+        raise TemplateDoesNotExist(name)
+    return template_candidate
 
 
 class SmartExtendsNode(ExtendsNode):
@@ -79,18 +65,31 @@ class SmartExtendsNode(ExtendsNode):
             return "<SmartExtendsNode: extends %s>" % self.parent_name_expr.token
         return '<SmartExtendsNode: extends "%s">' % self.parent_name
 
-    def render(self, context):
+    def get_source(self):
         source = getattr(self, 'source', None)
-        source = source and source[0]
+        return get_source(source)
+
+    def get_parent(self, context):
+        if self.parent_name_expr:
+            self.parent_name = self.parent_name_expr.resolve(context)
+        parent = self.parent_name
+        if not parent:
+            error_msg = "Invalid template name in 'extends' tag: %r." % parent
+            if self.parent_name_expr:
+                error_msg += " Got this from the '%s' variable." % self.parent_name_expr.token
+            raise TemplateSyntaxError(error_msg)
+        if hasattr(parent, 'render'):
+            return parent # parent is a Template object
+        source = self.get_source()
+        return get_template(parent, skip_template=source)
+
+    def render(self, context):
+        source = self.get_source()
         if source and source.loadname == self.parent_name:
-            if django.VERSION[0] == 1 and django.VERSION[1] <= 1:
-                template = find_template_source(self.parent_name, skip_template=source.name)
-                self.parent_name = template[1][0].name
-            else:
-                template = find_template(self.parent_name, skip_template=source.name)
-                template_source = template[0]
-                extends_tags = template_source.nodelist[0]
-                self.parent_name = extends_tags.source[0].name
+            template = find_template(self.parent_name, skip_template=source)
+            template_source = template[0]
+            extends_tags = template_source.nodelist[0]
+            self.parent_name = extends_tags.get_source().name
         return super(SmartExtendsNode, self).render(context)
 
 
