@@ -80,11 +80,12 @@ class SmartExtendsNode(ExtendsNode):
         return '<SmartExtendsNode: extends "%s">' % self.parent_name
 
     def render(self, context):
-        source = self.source[0]
-        if source.loadname == self.parent_name:
+        source = getattr(self, 'source', None)
+        source = source and source[0]
+        if source and source.loadname == self.parent_name:
             if django.VERSION[0] == 1 and django.VERSION[1] <= 1:
                 template = find_template_source(self.parent_name, skip_template=source.name)
-                self.parent_name = template[1].name
+                self.parent_name = template[1][0].name
             else:
                 template = find_template(self.parent_name, skip_template=source.name)
                 template_source = template[0]
