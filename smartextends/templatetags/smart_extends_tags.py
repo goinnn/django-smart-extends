@@ -5,7 +5,7 @@ from django.conf import settings
 from django.template.loader import get_template_from_string
 from django.template.loader import template_source_loaders, make_origin
 from django.template.loader_tags import ExtendsNode
-from django.utils.importlib import import_module
+
 
 register = Library()
 
@@ -26,7 +26,7 @@ def find_template_source(name, dirs=None, skip_template=None):
             i = path.rfind('.')
             module, attr = path[:i], path[i+1:]
             try:
-                mod = import_module(module)
+                mod = __import__(module, globals(), locals(), [attr])
             except ImportError, e:
                 raise ImproperlyConfigured, 'Error importing template source loader %s: "%s"' % (module, e)
             try:
