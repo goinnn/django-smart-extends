@@ -89,7 +89,8 @@ class SmartExtendsNode(ExtendsNode):
             template = find_template(self.parent_name, skip_template=source)
             template_source = template[0]
             extends_tags = template_source.nodelist[0]
-            self.parent_name = extends_tags.get_source().name
+            parent_source = get_source(getattr(extends_tags, 'source', None))
+            self.parent_name = getattr(parent_source, 'name', None)
         return super(SmartExtendsNode, self).render(context)
 
 
