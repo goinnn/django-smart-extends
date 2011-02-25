@@ -37,7 +37,11 @@ def find_template_source(name, dirs=None, skip_template=None):
     global template_source_loaders
     if template_source_loaders is None:
         loaders = []
-        for path in settings.TEMPLATE_LOADERS:
+        template_loaders = settings.TEMPLATE_LOADERS
+        if isinstance(template_loaders[0], tuple):
+            # django.template.loaders.cached.Loader. See template caching in Django docs
+            template_loaders = template_loaders[0][1]
+        for path in template_loaders:
             i = path.rfind('.')
             module, attr = path[:i], path[i+1:]
             try:
