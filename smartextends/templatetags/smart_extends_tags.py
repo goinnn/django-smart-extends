@@ -48,7 +48,11 @@ def find_template(name, dirs=None, skip_template=None):
     global template_source_loaders
     if template_source_loaders is None:
         loaders = []
-        for loader_name in settings.TEMPLATE_LOADERS:
+        template_loaders = settings.TEMPLATE_LOADERS
+        if isinstance(template_loaders[0], tuple):
+            # django.template.loaders.cached.Loader. See template caching in Django docs
+            template_loaders = template_loaders[0][1]
+        for loader_name in template_loaders:
             loader = find_template_loader(loader_name)
             if loader is not None:
                 loaders.append(loader)
