@@ -60,11 +60,11 @@ for dirpath, dirnames, filenames in os.walk('.'):
 
 setup(
     name="django-smart-extends",
-    version="0.5.1",
+    version="0.6",
     author="Yaco Sistemas S.L.",
     author_email="pmartin@yaco.es",
     description="This application is useful when you want to overwrite a template of a application in your project. Currently this in Django produce infinite recursion ",
-    long_description=(read('README')),
+    long_description=(read('README') + '\n\n' + read('CHANGES')),
     url='http://code.google.com/p/django-smart-extends/',
     classifiers=[
         'Development Status :: 4 - Beta',
