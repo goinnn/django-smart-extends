@@ -1,4 +1,4 @@
-# Copyright (c) 2010 by Yaco Sistemas <pmartin@yaco.es>
+# Copyright (c) 2010-2013 by Pablo Martin <goinnn@gmail.com>
 #
 # This software is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -61,11 +61,11 @@ for dirpath, dirnames, filenames in os.walk('.'):
 setup(
     name="django-smart-extends",
     version="0.5.1",
-    author="Yaco Sistemas S.L.",
-    author_email="pmartin@yaco.es",
+    author="Pablo Martin",
+    author_email="goinnn@gmail.com",
     description="This application is useful when you want to overwrite a template of a application in your project. Currently this in Django produce infinite recursion ",
-    long_description=(read('README')),
-    url='http://code.google.com/p/django-smart-extends/',
+    long_description=(read('README.rst') + '\n\n' + read('CHANGES.rst')),
+    url='https://github.com/goinnn/django-smart-extends',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Django',
