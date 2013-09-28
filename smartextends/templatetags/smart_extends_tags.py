@@ -1,4 +1,4 @@
-# Copyright (c) 2010 by Yaco Sistemas <pmartin@yaco.es>
+# Copyright (c) 2010-2013 by Pablo Martin <goinnn@gmail.com>
 #
 # This software is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by

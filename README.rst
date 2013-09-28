@@ -7,7 +7,7 @@ Smart extends
 Smart extends is a Django application that allows improve 
 
 It is distributed under the terms of the license write in the same directory,
-in the file LICENCE
+in the file COPYING.LGPLv3
 
 Depencies
 =========
