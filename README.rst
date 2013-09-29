@@ -45,7 +45,7 @@ In your settings.py
 
     )
 
- and if you want:
+And if you want:
 
 ::
 
