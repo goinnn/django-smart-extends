@@ -1,0 +1,7 @@
+include README.rst
+include AUTHORS.rst
+include CHANGES.rst
+include COPYING.LGPLv3
+prune   example/
+exclude *~
+exclude *.pyc
