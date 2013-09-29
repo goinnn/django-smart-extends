@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
-
-from django.conf.urls.defaults import patterns, url
+try:
+    from django.conf.urls import include, patterns, url
+except ImportError:  # Django < 1.5
+    from django.conf.urls.defaults import include, patterns, url
 
 
 urlpatterns = patterns('example.app.views',
