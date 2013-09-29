@@ -1,0 +1,8 @@
+{% smart_extends "admin/change_form.html" %}
+
+{% block content_title %}
+    {{ block.super }}
+    <p style="color:red">
+        Overwriting the change_form template in our project without to have to copy every line of this template in our project (without repeating code)
+    </p>
+{% endblock %}
