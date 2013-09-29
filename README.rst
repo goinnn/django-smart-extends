@@ -1,6 +1,8 @@
 .. contents::
 
-=========================
+====================
+django-smart-extends
+====================
 
 .. image:: https://api.travis-ci.org/goinnn/django-smart-extends.png?branch=django_1.1.X
     :target: https://travis-ci.org/goinnn/django-smart-extends
@@ -11,44 +13,50 @@
 .. image:: https://pypip.in/d/django-smart-extends/badge.png
     :target: https://pypi.python.org/pypi/django-smart-extends
 
-Smart extends is a Django application that allows improve 
+django-smart-extends is a Django application that allows improve the extension system of Django templates
 
 It is distributed under the terms of the license write in the same directory,
 in the file COPYING.LGPLv3
 
-=========================
+Dependencies
+============
 
-== Depencies ==
+* `Django <https://www.djangoproject.com/>`_ == 1.1
 
-Django 1.2 (Tested for that version)
+How to install
+==============
 
-== How to install ==
+In your settings.py
+-------------------
 
- === In your settings.py  ===
+::
 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.admin',
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.sites',
+        'django.contrib.admin',
 
-    ...
+        ...
 
-    'smartextends',
+        'smartextends',
 
-)
+    )
 
  and if you want:
 
-OVERWRITE_EXTENDS = True
+::
 
- === How to use ===
+    OVERWRITE_EXTENDS = True
+
+How to use
+----------
 
 This application is useful when you want to overwrite a template of a application in your project.
 Currently this in Django produce infinite recursion
 
-If you don't set OVERWRITE_EXTENDS = True
+If you set OVERWRITE_EXTENDS = True
 
 file:admin/change_list.html
 {% extends "admin/change_list.html" %}
@@ -70,5 +78,6 @@ file:admin/change_list.html
 
 == Patches ==
 
-If you set TEMPLATE_DEBUG = True in settings.py you must patch django code. You can find the patch in the patches directoy. There are one patch for Django 1.1.X version and other for Django 1.2.
+If you set TEMPLATE_DEBUG = False in settings.py you must patch django code. You can find the patch in the patches directoy::
 
+    patch -p1 -N -d my/path/of/django/template/ -i ./patches/patch.diff
