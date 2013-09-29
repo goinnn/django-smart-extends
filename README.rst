@@ -57,7 +57,7 @@ How to use
 This application is useful when you want to overwrite a template of a application in your project.
 Currently this in Django produce infinite recursion
 
-If you don't set OVERWRITE_EXTENDS = True
+If you set OVERWRITE_EXTENDS = True
 
 file:admin/change_list.html
 
