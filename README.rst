@@ -13,7 +13,7 @@ django-smart-extends
 .. image:: https://pypip.in/d/django-smart-extends/badge.png
     :target: https://pypi.python.org/pypi/django-smart-extends
 
-Smart extends is a Django application that allows improve the extension system of Django
+django-smart-extends is a Django application that allows improve the extension system of Django templates.
 
 It is distributed under the terms of the license write in the same directory,
 in the file COPYING.LGPLv3
@@ -21,9 +21,8 @@ in the file COPYING.LGPLv3
 Dependencies
 ============
 
-* `Django <https://www.djangoproject.com/>`_ >= 1.5
-
-* There are specific branches for Django 1.5.X and 1.4.X, 1.3.X and 1.2.X, and 1.1.X (Also there is an old branch of django 1.1.0, without the last changes)
+* `Django <https://www.djangoproject.com/>`_ >= 1.5 (master branch)
+* There are specific branches for `Django 1.5.X and 1.4.X <https://github.com/goinnn/django-smart-extends/tree/django_1.4_and_1.5>`_, `1.3.X and 1.2.X <https://github.com/goinnn/django-smart-extends/tree/django_1.2_and_1.3>`_, and `1.1.X <https://github.com/goinnn/django-smart-extends/tree/django_1.1.X>`_ (Also there is an old and unmaintained branch of `Django 1.1.0 <https://github.com/goinnn/django-smart-extends/tree/django_1.1>`_ without the last changes)
 
 How to install
 ==============
