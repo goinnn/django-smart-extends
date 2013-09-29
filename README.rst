@@ -1,8 +1,8 @@
 .. contents::
 
-=============
-Smart extends
-=============
+====================
+django-smart-extends
+====================
 
 .. image:: https://api.travis-ci.org/goinnn/django-smart-extends.png?branch=django_1.2_and_1.3
     :target: https://travis-ci.org/goinnn/django-smart-extends
@@ -13,7 +13,7 @@ Smart extends
 .. image:: https://pypip.in/d/django-smart-extends/badge.png
     :target: https://pypi.python.org/pypi/django-smart-extends
 
-Smart extends is a Django application that allows improve 
+django-smart-extends is a Django application that allows improve the extension system of Django templates
 
 It is distributed under the terms of the license write in the same directory,
 in the file COPYING.LGPLv3
@@ -21,9 +21,7 @@ in the file COPYING.LGPLv3
 Depencies
 =========
 
-Django 1.2 - 1.3 (Tested for those versions)
-
-Django 1.1 - 1.1.X (There were two branches to those versions)
+* `Django <https://www.djangoproject.com/>`_ >= 1.2 and < 1.4
 
 How to install
 ==============
@@ -58,7 +56,7 @@ How to use
 This application is useful when you want to overwrite a template of a application in your project.
 Currently this in Django produce infinite recursion
 
-If you don't set OVERWRITE_EXTENDS = True
+If you set OVERWRITE_EXTENDS = True
 
 file:admin/change_list.html
 
@@ -87,5 +85,10 @@ file:admin/change_list.html
 Patches
 =======
 
-If you set TEMPLATE_DEBUG = True in settings.py you must patch django code. You can find the patch in the patches directoy. There are one patch for Django 1.1.X version, other for Django 1.2 and other for Django 1.3.
+If you set TEMPLATE_DEBUG = True in settings.py you must patch django code. You can find the patch in the patches directoy::
+
+    # If you have django 1.3
+    patch -p1 -N -d my/path/of/django/template/ -i ./patches/patch1.3.diff
+    # Or this if you have django 1.2
+    patch -p1 -N -d my/path/of/django/template/ -i ./patches/patch1.2.diff
 
