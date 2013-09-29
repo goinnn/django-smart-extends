@@ -2,14 +2,14 @@
 
 =========================
 
-.. image:: https://travis-ci.org/goinnn/django-smartextends
-    :target: https://travis-ci.org/goinnn/django-smartextends
+.. image:: https://travis-ci.org/goinnn/django-smart-extends
+    :target: https://travis-ci.org/goinnn/django-smart-extends
 
-.. image:: https://badge.fury.io/py/django-smartextends.png
-    :target: https://badge.fury.io/py/django-smartextends
+.. image:: https://badge.fury.io/py/django-smart-extends.png
+    :target: https://badge.fury.io/py/django-smart-extends
 
-.. image:: https://pypip.in/d/django-smartextends/badge.png
-    :target: https://pypi.python.org/pypi/django-smartextends
+.. image:: https://pypip.in/d/django-smart-extends/badge.png
+    :target: https://pypi.python.org/pypi/django-smart-extends
 
 Smart extends is a Django application that allows improve 
 
