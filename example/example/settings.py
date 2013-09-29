@@ -143,6 +143,9 @@ LOGGING = {
 
 import django
 
+if django.VERSION[0] >= 1 and django.VERSION[1] >= 4:
+    TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.tz',)
+
 if django.VERSION[0] >= 1 and django.VERSION[1] >= 3:
     INSTALLED_APPS += ('django.contrib.staticfiles',)
     # Absolute path to the directory static files should be collected to.
@@ -177,7 +180,7 @@ if django.VERSION[0] >= 1 and django.VERSION[1] >= 3:
     TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.static',)
 
 
-elif django.VERSION[0] >= 1 and django.VERSION[1] >= 2:
+if django.VERSION[0] >= 1 and django.VERSION[1] >= 2:
     INSTALLED_APPS += ('django.contrib.messages',)
     MIDDLEWARE_CLASSES += ('django.middleware.csrf.CsrfViewMiddleware',
                            'django.contrib.messages.middleware.MessageMiddleware')
