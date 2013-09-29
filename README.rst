@@ -4,7 +4,7 @@
 Smart extends
 =============
 
-.. image:: https://travis-ci.org/goinnn/django-smart-extends
+.. image:: https://api.travis-ci.org/goinnn/django-smart-extends.png?branch=django_1.2_and_1.3
     :target: https://travis-ci.org/goinnn/django-smart-extends
 
 .. image:: https://badge.fury.io/py/django-smart-extends.png
