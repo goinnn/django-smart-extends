@@ -72,7 +72,7 @@ setup(
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
     ],
     license="LGPL 3",
-    keywords="django extends templatetags infinite recursion",
+    keywords="django,extends,infinite recursion,smart extends",
     packages=find_packages('.'),
     include_package_data=True,
     zip_safe=False,
