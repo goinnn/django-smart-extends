@@ -4,6 +4,15 @@
 Smart extends
 =============
 
+.. image:: https://travis-ci.org/goinnn/django-smartextends
+    :target: https://travis-ci.org/goinnn/django-smartextends
+
+.. image:: https://badge.fury.io/py/django-smartextends.png
+    :target: https://badge.fury.io/py/django-smartextends
+
+.. image:: https://pypip.in/d/django-smartextends/badge.png
+    :target: https://pypi.python.org/pypi/django-smartextends
+
 Smart extends is a Django application that allows improve 
 
 It is distributed under the terms of the license write in the same directory,
