@@ -13,7 +13,7 @@ django-smart-extends
 .. image:: https://pypip.in/d/django-smart-extends/badge.png
     :target: https://pypi.python.org/pypi/django-smart-extends
 
-django-smart-extends is a Django application that allows improve the extension system of Django templates
+django-smart-extends is a Django application that allows improve the extension system of Django templates.
 
 It is distributed under the terms of the license write in the same directory,
 in the file COPYING.LGPLv3
@@ -44,7 +44,7 @@ In your settings.py
 
     )
 
- and if you want:
+And if you want:
 
 ::
 
