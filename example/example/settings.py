@@ -86,9 +86,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 ROOT_URLCONF = 'example.urls'
@@ -180,5 +178,25 @@ if django.VERSION[0] >= 1 and django.VERSION[1] >= 3:
 
 elif django.VERSION[0] >= 1 and django.VERSION[1] >= 2:
     INSTALLED_APPS += ('django.contrib.messages',)
-elif django.VERSION[0] >= 1 and django.VERSION[1] >= 1:
-    TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.static',)
+    MIDDLEWARE_CLASSES += ('django.middleware.csrf.CsrfViewMiddleware',
+                           'django.contrib.messages.middleware.MessageMiddleware')
+elif django.VERSION[0] >= 1 and django.VERSION[1] == 1:
+    TEMPLATE_CONTEXT_PROCESSORS = (
+        'django.core.context_processors.auth',
+        'django.core.context_processors.debug',
+        'django.core.context_processors.i18n',
+        'django.core.context_processors.media',
+    #    'django.core.context_processors.request',
+    )
+    DATABASE_ENGINE = DATABASES['default']['ENGINE']        # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+    DATABASE_NAME = DATABASES['default']['NAME']            # Or path to database file if using sqlite3.
+    DATABASE_USER = ''             # Not used with sqlite3.
+    DATABASE_PASSWORD = ''         # Not used with sqlite3.
+    DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+    DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+    DATABASE_OPTIONS = {}          # Set to empty dictionary for default.
+    TEMPLATE_LOADERS = (
+        'django.template.loaders.filesystem.load_template_source',
+        'django.template.loaders.app_directories.load_template_source',
+    #     'django.template.loaders.eggs.load_template_source',
+    )
