@@ -19,7 +19,8 @@
 
 from os import path
 
-DEBUG = False
+# In the app/tests.py file set the DEBUG and TEMPLATE_DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
