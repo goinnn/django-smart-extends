@@ -21,9 +21,9 @@ in the file COPYING.LGPLv3
 Dependencies
 ============
 
-* For trunk code you will need Django 1.4
+* `Django <https://www.djangoproject.com/>`_ >= 1.5
 
-* There are specific branches for Django 1.2.X, 1.3.X and 1.1.X (There were two branches to those versions)
+* There are specific branches for Django 1.5.X and 1.4.X, 1.3.X and 1.2.X, and 1.1.X (Also there is an old branch of django 1.1.0, without the last changes)
 
 How to install
 ==============
@@ -58,7 +58,7 @@ How to use
 This application is useful when you want to overwrite a template of a application in your project.
 Currently this in Django produce infinite recursion
 
-If you don't set OVERWRITE_EXTENDS = True
+If you set OVERWRITE_EXTENDS = True
 
 file:admin/change_list.html
 
@@ -87,5 +87,7 @@ file:admin/change_list.html
 Patches
 =======
 
-If you set TEMPLATE_DEBUG = True in settings.py you must patch django code. You can find the patch in the patches directoy. There are one patch for Django 1.1.X version, other for Django 1.2 and other for Django 1.3. and Django 1.4
+If you set TEMPLATE_DEBUG = False in settings.py you must patch django code. You can find the patch in the patches directoy::
+
+    patch -p2 -N -d my/path/of/django/ -i ./patches/patch.diff
 
