@@ -1,8 +1,8 @@
 .. contents::
 
-=============
-Smart extends
-=============
+====================
+django-smart-extends
+====================
 
 .. image:: https://api.travis-ci.org/goinnn/django-smart-extends.png?branch=master
     :target: https://travis-ci.org/goinnn/django-smart-extends
@@ -13,7 +13,7 @@ Smart extends
 .. image:: https://pypip.in/d/django-smart-extends/badge.png
     :target: https://pypi.python.org/pypi/django-smart-extends
 
-Smart extends is a Django application that allows improve 
+Smart extends is a Django application that allows improve the extension system of Django
 
 It is distributed under the terms of the license write in the same directory,
 in the file COPYING.LGPLv3
