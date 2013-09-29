@@ -37,7 +37,7 @@ class SmartExtendsCase(TestCase):
     def check_url(self, client, url):
         response = client.get(url)
         str_extension = 'Overwriting the change_form template in our project without to have to copy every line of this template in our project'
-        self.assertEqual(str_extension in response.content, True)
+        self.assertEqual(str_extension in response.content.decode('utf-8'), True)
 
     def test_smart_extends_add_form(self):
         client = self.__client_login()
