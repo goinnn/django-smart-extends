@@ -2,7 +2,7 @@
 
 =========================
 
-.. image:: https://travis-ci.org/goinnn/django-smart-extends
+.. image:: https://api.travis-ci.org/goinnn/django-smart-extends.png?branch=django_1.1.X
     :target: https://travis-ci.org/goinnn/django-smart-extends
 
 .. image:: https://badge.fury.io/py/django-smart-extends.png
