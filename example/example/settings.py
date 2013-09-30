@@ -84,6 +84,16 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+#TEMPLATE_LOADERS = [
+        #('django.template.loaders.cached.Loader',(
+         #'django.template.loaders.filesystem.Loader',
+         #'django.template.loaders.app_directories.Loader',
+         ##     'django.template.loaders.eggs.Loader',
+    #))
+    #]
+
+#OVERWRITE_EXTENDS = True
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
