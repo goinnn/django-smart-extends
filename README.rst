@@ -51,10 +51,12 @@ And if you want:
     OVERWRITE_EXTENDS = True
 
 How to use
-----------
+==========
 
 This application is useful when you want to overwrite a template of a application in your project.
 Currently this in Django produce infinite recursion
+
+This is an example with django.contrib.admin app, but django-smart-extends works with any application, **this is not only to the admin site**. This is very useful if you use reusable django apps or some django CMS.
 
 If you set OVERWRITE_EXTENDS = True
 
@@ -88,3 +90,9 @@ Patche
 If you set TEMPLATE_DEBUG = False in settings.py you must patch django code. You can find the patch in the patches directoy::
 
     patch -p1 -N -d my/path/of/django/template/ -i ./patches/patch.diff
+
+Reported
+========
+
+ * Ticket in `Django <https://code.djangoproject.com/ticket/15053>`_
+ * `Pull request <https://github.com/django/django/pull/217>`_
