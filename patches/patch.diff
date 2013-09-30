@@ -2,15 +2,18 @@ diff --git a/django/template/base.py b/django/template/base.py
 index 8ee7723..3ace3a4 100644
 --- a/django/template/base.py
 +++ b/django/template/base.py
-@@ -227,6 +227,7 @@ class Lexer(object):
+@@ -227,6 +227,10 @@ class Lexer(object):
          else:
              token = Token(TOKEN_TEXT, token_string)
          token.lineno = self.lineno
++        # token.source is a tuple, this contains origin object and
++        # the range of the columns where is this token.
++        # If TEMPLATE_DEBUG = False we don't need it, therefore we set with (-1, -1)
 +        token.source = self.origin, (-1, -1)
          self.lineno += token_string.count('\n')
          return token
  
-@@ -304,6 +305,7 @@ class Parser(object):
+@@ -304,6 +308,7 @@ class Parser(object):
                                            "in the template." % node)
          if isinstance(nodelist, NodeList) and not isinstance(node, TextNode):
              nodelist.contains_nontext = True
