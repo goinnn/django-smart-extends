@@ -43,6 +43,9 @@ class SmartExtendsCase(TestCase):
         self.assertEqual(str_extension in response.content.decode('utf-8'), True)
 
     def test_smart_extends_add_form(self):
+        import sys
+        if sys.version_info[0] == 3:
+            x = 3 / 0
         client = self.__client_login()
         self.check_url(client, reverse('admin:auth_group_add'))
 
