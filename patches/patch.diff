@@ -1,16 +1,19 @@
 diff --git a/django/template/base.py b/django/template/base.py
-index e2fc66b..09f114b 100644
+index 8ee7723..3ace3a4 100644
 --- a/django/template/base.py
 +++ b/django/template/base.py
-@@ -220,6 +220,7 @@ class Lexer(object):
+@@ -227,6 +227,10 @@ class Lexer(object):
          else:
              token = Token(TOKEN_TEXT, token_string)
          token.lineno = self.lineno
++        # token.source is a tuple, this contains origin object and
++        # the range of the columns where is this token.
++        # If TEMPLATE_DEBUG = False we don't need it, therefore we set with (-1, -1)
 +        token.source = self.origin, (-1, -1)
          self.lineno += token_string.count('\n')
          return token
  
-@@ -297,6 +298,7 @@ class Parser(object):
+@@ -304,6 +308,7 @@ class Parser(object):
                                            "in the template." % node)
          if isinstance(nodelist, NodeList) and not isinstance(node, TextNode):
              nodelist.contains_nontext = True
@@ -19,7 +22,7 @@ index e2fc66b..09f114b 100644
  
      def enter_command(self, command, token):
 diff --git a/django/template/debug.py b/django/template/debug.py
-index 74aa82b..8289cc3 100644
+index c7ac007..d82de50 100644
 --- a/django/template/debug.py
 +++ b/django/template/debug.py
 @@ -55,10 +55,6 @@ class DebugParser(Parser):
@@ -34,19 +37,15 @@ index 74aa82b..8289cc3 100644
          command, source = self.command_stack.pop()
          msg = "Unclosed tag '%s'. Looking for one of: %s " % (command, ', '.join(parse_until))
 diff --git a/django/template/loader.py b/django/template/loader.py
-index 4185017..82f2ead 100644
+index cfffb40..244abf3 100644
 --- a/django/template/loader.py
 +++ b/django/template/loader.py
-@@ -79,10 +79,9 @@ class LoaderOrigin(Origin):
+@@ -80,7 +80,7 @@ class LoaderOrigin(Origin):
          return self.loader(self.loadname, self.dirs)[0]
  
  def make_origin(display_name, loader, name, dirs):
 -    if settings.TEMPLATE_DEBUG and display_name:
 +    if display_name:
          return LoaderOrigin(display_name, loader, name, dirs)
--    else:
--        return None
-+    return None
- 
- def find_template_loader(loader):
-     if isinstance(loader, (tuple, list)):
+     else:
+         return None

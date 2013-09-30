@@ -13,16 +13,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
-import django
 from django.template import TemplateSyntaxError, TemplateDoesNotExist
 from django.template import Library
 from django.conf import settings
+from django.template.base import Variable
 from django.template.loader import get_template_from_string
 from django.template.loader import template_source_loaders, make_origin
 from django.template.loader_tags import ExtendsNode
-from django.utils.importlib import import_module
 
 register = Library()
+
 
 def get_template(template_name, skip_template=None):
     """
@@ -35,12 +35,13 @@ def get_template(template_name, skip_template=None):
         template = get_template_from_string(template, origin, template_name)
     return template
 
-def get_source(source):
-    if getattr(source, '__iter__', None):
-        source = source[0]
-    return source
 
 def find_template(name, dirs=None, skip_template=None):
+    """
+    Returns a tuple with a compiled Template object for the given template name,
+    and a origin object. Skipping the current template (skip_template),
+    this param contain the absolute path of the template.
+    """
     from django.template.loader import find_template_loader
     # Calculate template_source_loaders the first time the function is executed
     # because putting this logic in the module-level namespace may cause
@@ -49,7 +50,7 @@ def find_template(name, dirs=None, skip_template=None):
     if template_source_loaders is None:
         loaders = []
         template_loaders = settings.TEMPLATE_LOADERS
-        if isinstance(template_loaders[0], tuple):
+        if isinstance(template_loaders[0], tuple) or isinstance(template_loaders[0], list):
             # django.template.loaders.cached.Loader. See template caching in Django docs
             template_loaders = template_loaders[0][1]
         for loader_name in template_loaders:
@@ -61,9 +62,10 @@ def find_template(name, dirs=None, skip_template=None):
     for loader in template_source_loaders:
         try:
             source, display_name = loader(name, dirs)
-            if skip_template:
+            if skip_template and skip_template.endswith(name):
                 extends_tags = source.nodelist[0]
-                if get_source(extends_tags.source).name == skip_template.name:
+                extends_tags_origin, extends_tags_source = extends_tags.source
+                if extends_tags_origin.name == skip_template:
                     template_candidate = None
                     continue
                 if not template_candidate:
@@ -82,10 +84,6 @@ class SmartExtendsNode(ExtendsNode):
     def __repr__(self):
         return '<ExtendsNode: extends %s>' % self.parent_name.token
 
-    def get_source(self):
-        source = getattr(self, 'source', None)
-        return get_source(source)
-
     def get_parent(self, context):
         parent = getattr(self, 'full_parent_name', self.parent_name.resolve(context))
         if not parent:
@@ -95,9 +93,9 @@ class SmartExtendsNode(ExtendsNode):
                 error_msg += " Got this from the '%s' variable." % self.parent_name.token
             raise TemplateSyntaxError(error_msg)
         if hasattr(parent, 'render'):
-            return parent # parent is a Template object
-        source = self.get_source()
-        return get_template(parent, skip_template=source)
+            return parent  # parent is a Template object
+        origin, source = self.source
+        return get_template(parent, skip_template=origin.name)
 
 
 def do_smart_extends(parser, token):
@@ -107,7 +105,7 @@ def do_smart_extends(parser, token):
     This tag may be used similarly to extends (django tag).
     This tag provides the possibility to extend to yourself without infinite
     recursion. It is possible for use a API function "find_template",
-    that skip the invoke template 
+    that skip the invoke template
     """
     bits = token.split_contents()
     if len(bits) != 2:
