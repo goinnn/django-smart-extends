@@ -49,3 +49,4 @@ index cfffb40..244abf3 100644
          return LoaderOrigin(display_name, loader, name, dirs)
      else:
          return None
++    return None
