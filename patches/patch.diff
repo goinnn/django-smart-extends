@@ -40,12 +40,16 @@ diff --git a/django/template/loader.py b/django/template/loader.py
 index cfffb40..244abf3 100644
 --- a/django/template/loader.py
 +++ b/django/template/loader.py
-@@ -80,7 +80,7 @@ class LoaderOrigin(Origin):
+@@ -80,10 +80,9 @@
          return self.loader(self.loadname, self.dirs)[0]
  
  def make_origin(display_name, loader, name, dirs):
 -    if settings.TEMPLATE_DEBUG and display_name:
 +    if display_name:
          return LoaderOrigin(display_name, loader, name, dirs)
-     else:
-         return None
+-    else:
+-        return None
++    return None
+ 
+ def find_template_loader(loader):
+     if isinstance(loader, (tuple, list)):
