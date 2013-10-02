@@ -14,7 +14,7 @@ Index: django/template/__init__.py
                  raise TemplateSyntaxError("%r must be the first tag in the template." % node)
          if isinstance(nodelist, NodeList) and not isinstance(node, TextNode):
              nodelist.contains_nontext = True
-+        node.source = token.source
++        node.source = token.source, (-1, -1)
          nodelist.append(node)
  
      def enter_command(self, command, token):

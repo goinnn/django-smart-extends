@@ -35,12 +35,6 @@ def get_template(template_name, skip_template=None):
     return template
 
 
-def get_source(source):
-    if getattr(source, '__iter__', None):
-        source = source[0]
-    return source
-
-
 def find_template(name, dirs=None, skip_template=None):
     """
     Returns a tuple with a compiled Template object for the given template name,
@@ -55,7 +49,7 @@ def find_template(name, dirs=None, skip_template=None):
     if template_source_loaders is None:
         loaders = []
         template_loaders = settings.TEMPLATE_LOADERS
-        if isinstance(template_loaders[0], tuple):
+        if isinstance(template_loaders[0], tuple) or isinstance(template_loaders[0], list):
             # django.template.loaders.cached.Loader. See template caching in Django docs
             template_loaders = template_loaders[0][1]
         for loader_name in template_loaders:
@@ -67,9 +61,10 @@ def find_template(name, dirs=None, skip_template=None):
     for loader in template_source_loaders:
         try:
             source, display_name = loader(name, dirs)
-            if skip_template:
+            if skip_template and skip_template.endswith(name):
                 extends_tags = source.nodelist[0]
-                if get_source(extends_tags.source).name == skip_template.name:
+                extends_tags_origin, extends_tags_source = extends_tags.source
+                if extends_tags_origin.name == skip_template:
                     template_candidate = None
                     continue
                 if not template_candidate:
@@ -90,10 +85,6 @@ class SmartExtendsNode(ExtendsNode):
             return "<SmartExtendsNode: extends %s>" % self.parent_name_expr.token
         return '<SmartExtendsNode: extends "%s">' % self.parent_name
 
-    def get_source(self):
-        source = getattr(self, 'source', None)
-        return get_source(source)
-
     def get_parent(self, context):
         if self.parent_name_expr:
             self.parent_name = self.parent_name_expr.resolve(context)
@@ -105,8 +96,8 @@ class SmartExtendsNode(ExtendsNode):
             raise TemplateSyntaxError(error_msg)
         if hasattr(parent, 'render'):
             return parent  # parent is a Template object
-        source = self.get_source()
-        return get_template(parent, skip_template=source)
+        origin, source = self.source
+        return get_template(parent, skip_template=origin.name)
 
 
 def do_smart_extends(parser, token):
