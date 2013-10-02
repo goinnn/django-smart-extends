@@ -82,7 +82,7 @@ def find_template(name, dirs=None, skip_template=None):
 class SmartExtendsNode(ExtendsNode):
 
     def __repr__(self):
-        return '<ExtendsNode: extends %s>' % self.parent_name.token
+        return '<SmartExtendsNode: extends %s>' % self.parent_name.token
 
     def get_parent(self, context):
         parent = getattr(self, 'full_parent_name', self.parent_name.resolve(context))
