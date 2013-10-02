@@ -88,7 +88,7 @@ file:admin/change_list.html
 Patche
 ======
 
-If you set TEMPLATE_DEBUG = False in settings.py you must patch django code. You can find the patch in the patches directoy::
+If you set TEMPLATE_DEBUG = False in settings.py you must patch the django code. You can find the patch in the patches directoy::
 
     patch -p2 -N -d my/path/of/django/ -i ./patches/patch.diff
 
