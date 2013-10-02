@@ -2,19 +2,22 @@ Index: django/template/__init__.py
 ===================================================================
 --- django/template/__init__.py	(revision: 13865)
 +++ django/template/__init__.py	(working copy)
-@@ -240,6 +240,7 @@
+@@ -240,6 +240,10 @@
                  token = Token(TOKEN_COMMENT, '')
          else:
              token = Token(TOKEN_TEXT, token_string)
-+        token.source = self.origin
++        # token.source is a tuple, this contains origin object and
++        # the range of the columns where is this token.
++        # If TEMPLATE_DEBUG = False we don't need it, therefore we set with (-1, -1)
++        token.source = self.origin, (-1, -1)
          return token
  
  class Parser(object):
-@@ -311,6 +312,7 @@
+@@ -311,6 +315,7 @@
                  raise TemplateSyntaxError("%r must be the first tag in the template." % node)
          if isinstance(nodelist, NodeList) and not isinstance(node, TextNode):
              nodelist.contains_nontext = True
-+        node.source = token.source, (-1, -1)
++        node.source = token.source
          nodelist.append(node)
  
      def enter_command(self, command, token):

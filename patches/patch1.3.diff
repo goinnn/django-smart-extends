@@ -2,19 +2,22 @@ Index: django/template/base.py
 ===================================================================
 --- django/template/base.py	(revision: 15906)
 +++ django/template/base.py	(working copy)
-@@ -196,6 +196,7 @@
+@@ -196,6 +196,10 @@
          else:
              token = Token(TOKEN_TEXT, token_string)
          token.lineno = self.lineno
-+        token.source = self.origin
++        # token.source is a tuple, this contains origin object and
++        # the range of the columns where is this token.
++        # If TEMPLATE_DEBUG = False we don't need it, therefore we set with (-1, -1)
++        token.source = self.origin, (-1, -1)
          self.lineno += token_string.count('\n')
          return token
  
-@@ -268,6 +269,7 @@
+@@ -268,6 +272,7 @@
                  raise TemplateSyntaxError("%r must be the first tag in the template." % node)
          if isinstance(nodelist, NodeList) and not isinstance(node, TextNode):
              nodelist.contains_nontext = True
-+        node.source = token.source, (-1, -1)
++        node.source = token.source
          nodelist.append(node)
  
      def enter_command(self, command, token):
