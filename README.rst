@@ -90,10 +90,10 @@ Patches
 
 If you set TEMPLATE_DEBUG = False in settings.py you must patch the django code. You can find the patches in the patches directoy::
 
-    # If you are using django 1.5   
-    patch -p2 -N -d my/path/of/django/ -i ./patches/patch1.5.diff
+    # If you are using django 1.5
+    patch -p2 -N -d my/path/of/django/ < ./patches/patch1.5.diff
     # Or this if you are using django 1.4
-    patch -p2 -N -d my/path/of/django/ -i ./patches/patch1.4.diff
+    patch -p2 -N -d my/path/of/django/ < ./patches/patch1.4.diff
 
 
 Reported
