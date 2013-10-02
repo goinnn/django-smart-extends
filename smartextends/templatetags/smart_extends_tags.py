@@ -42,6 +42,11 @@ def get_source(source):
 
 
 def find_template(name, dirs=None, skip_template=None):
+    """
+    Returns a tuple with a compiled Template object for the given template name,
+    and a origin object. Skipping the current template (skip_template),
+    this param contain the absolute path of the template.
+    """
     from django.template.loader import find_template_loader
     # Calculate template_source_loaders the first time the function is executed
     # because putting this logic in the module-level namespace may cause
