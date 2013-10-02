@@ -1,7 +1,7 @@
-Index: template/base.py
+Index: django/template/base.py
 ===================================================================
---- template/base.py	(revisión: 15906)
-+++ template/base.py	(copia de trabajo)
+--- django/template/base.py	(revisión: 15906)
++++ django/template/base.py	(copia de trabajo)
 @@ -196,6 +196,7 @@
          else:
              token = Token(TOKEN_TEXT, token_string)
@@ -18,10 +18,10 @@ Index: template/base.py
          nodelist.append(node)
  
      def enter_command(self, command, token):
-Index: template/loader.py
+Index: django/template/loader.py
 ===================================================================
---- template/loader.py	(revisión: 15906)
-+++ template/loader.py	(copia de trabajo)
+--- django/template/loader.py	(revisión: 15906)
++++ django/template/loader.py	(copia de trabajo)
 @@ -78,12 +78,21 @@
      def reload(self):
          return self.loader(self.loadname, self.dirs)[0]
