@@ -18,13 +18,17 @@
 
 
 import os
+import sys
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'example.settings'
+if len(sys.argv) == 1:
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'example.settings'
+else:
+    os.environ['DJANGO_SETTINGS_MODULE'] = sys.argv[1]
 
 import django
 from django.core import management
 
 if django.VERSION[0] == 1 and django.VERSION[1] <= 5:
-    management.call_command('test', 'app')
+    management.call_command('test', 'app', )
 else:
-    management.call_command('test', 'testing.app')
+    management.call_command('test', 'example.app')
