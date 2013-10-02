@@ -13,16 +13,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
-import django
 from django.template import TemplateSyntaxError, TemplateDoesNotExist
 from django.template import Library
 from django.conf import settings
 from django.template.loader import get_template_from_string
 from django.template.loader import template_source_loaders, make_origin
 from django.template.loader_tags import ExtendsNode
-from django.utils.importlib import import_module
 
 register = Library()
+
 
 def get_template(template_name, skip_template=None):
     """
@@ -35,10 +34,12 @@ def get_template(template_name, skip_template=None):
         template = get_template_from_string(template, origin, template_name)
     return template
 
+
 def get_source(source):
     if getattr(source, '__iter__', None):
         source = source[0]
     return source
+
 
 def find_template(name, dirs=None, skip_template=None):
     from django.template.loader import find_template_loader
@@ -98,7 +99,7 @@ class SmartExtendsNode(ExtendsNode):
                 error_msg += " Got this from the '%s' variable." % self.parent_name_expr.token
             raise TemplateSyntaxError(error_msg)
         if hasattr(parent, 'render'):
-            return parent # parent is a Template object
+            return parent  # parent is a Template object
         source = self.get_source()
         return get_template(parent, skip_template=source)
 
@@ -120,7 +121,7 @@ def do_smart_extends(parser, token):
     This tag may be used similarly to extends (django tag).
     This tag provides the possibility to extend to yourself without infinite
     recursion. It is possible for use a API function "find_template",
-    that skip the invoke template 
+    that skip the invoke template
     """
     bits = token.split_contents()
     if len(bits) != 2:
