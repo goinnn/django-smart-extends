@@ -1,7 +1,7 @@
 Index: django/template/__init__.py
 ===================================================================
---- django/template/__init__.py	(revisión: 13865)
-+++ django/template/__init__.py	(copia de trabajo)
+--- django/template/__init__.py	(revision: 13865)
++++ django/template/__init__.py	(working copy)
 @@ -240,6 +240,7 @@
                  token = Token(TOKEN_COMMENT, '')
          else:
@@ -20,26 +20,19 @@ Index: django/template/__init__.py
      def enter_command(self, command, token):
 Index: django/template/loader.py
 ===================================================================
---- django/template/loader.py	(revisión: 13865)
-+++ django/template/loader.py	(copia de trabajo)
-@@ -78,11 +78,19 @@
-     def reload(self):
+--- django/template/loader.py	(revision: 13865)
++++ django/template/loader.py	(working copy)
+@@ -79,10 +79,9 @@
          return self.loader(self.loadname, self.dirs)[0]
  
-+
-+class LoaderOriginFake(object):
-+
-+    def __init__(self, display_name, loader, name, dirs):
-+        self.name = display_name
-+        self.loader, self.loadname, self.dirs = loader, name, dirs
-+
-+
  def make_origin(display_name, loader, name, dirs):
-     if settings.TEMPLATE_DEBUG and display_name:
+-    if settings.TEMPLATE_DEBUG and display_name:
++    if display_name:
          return LoaderOrigin(display_name, loader, name, dirs)
-     else:
+-    else:
 -        return None
-+        return LoaderOriginFake(display_name, loader, name, dirs)
++    return None
  
  def find_template_loader(loader):
      if isinstance(loader, (tuple, list)):
+
