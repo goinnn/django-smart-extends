@@ -94,6 +94,10 @@ TEMPLATE_LOADERS = (
 
 #OVERWRITE_EXTENDS = True
 
+ALLOWED_HOSTS = [
+    'localhost',
+]
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

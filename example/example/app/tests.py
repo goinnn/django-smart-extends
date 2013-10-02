@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -36,8 +35,6 @@ class SmartExtendsCase(TestCase):
         return client
 
     def check_url(self, client, url):
-        settings.DEBUG = False
-        settings.TEMPLATE_DEBUG = False
         response = client.get(url)
         str_extension = 'Overwriting the change_form template in our project without to have to copy every line of this template in our project'
         self.assertEqual(str_extension in response.content.decode('utf-8'), True)
