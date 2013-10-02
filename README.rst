@@ -85,10 +85,10 @@ file:admin/change_list.html
         <link rel="stylesheet" type="text/css" href="XXX" />
     {% endblock %}
 
-Patche
-======
+Patches
+=======
 
-If you set TEMPLATE_DEBUG = False in settings.py you must patch django code. You can find the patch in the patches directoy::
+If you set TEMPLATE_DEBUG = False in settings.py you must patch the django code. You can find the patches in the patches directoy::
 
     # If you are using django 1.5   
     patch -p2 -N -d my/path/of/django/ -i ./patches/patch1.5.diff
