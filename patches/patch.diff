@@ -21,7 +21,7 @@ Index: template/__init__.py
          nodelist.append(node)
  
      def enter_command(self, command, token):
-Index: template/loader.py
+Index: django/template/loader.py
 ===================================================================
 --- django/template/loader.py	(revision: 13096)
 +++ django/template/loader.py	(working copy)
@@ -38,3 +38,18 @@ Index: template/loader.py
  
  def find_template_source(name, dirs=None):
      # Calculate template_source_loaders the first time the function is executed
+Index: template/loader.py
+===================================================================
+--- django/template/debug.py    2013-10-02 20:47:35.440205525 +0200
++++ django/template/debug.py   2013-10-02 20:47:44.116205131 +0200
+@@ -52,10 +52,6 @@
+     def create_variable_node(self, contents):
+         return DebugVariableNode(contents)
+ 
+-    def extend_nodelist(self, nodelist, node, token):
+-        node.source = token.source
+-        super(DebugParser, self).extend_nodelist(nodelist, node, token)
+-
+     def unclosed_block_tag(self, parse_until):
+         command, source = self.command_stack.pop()
+         msg = "Unclosed tag '%s'. Looking for one of: %s " % (command, ', '.join(parse_until))
