@@ -89,7 +89,7 @@ Patche
 
 If you set TEMPLATE_DEBUG = False in settings.py you must patch the django code. You can find the patch in the patches directoy::
 
-    patch -p1 -N -d my/path/of/django/template/ -i ./patches/patch.diff
+    patch -p1 -N -d my/path/of/django/ -i ./patches/patch.diff
 
 Reported
 ========

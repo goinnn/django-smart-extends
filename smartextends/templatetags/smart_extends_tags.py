@@ -13,10 +13,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
-import django
-from django.template import TemplateSyntaxError, TemplateDoesNotExist
-from django.template import Library
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.template import (Library, TemplateSyntaxError, TemplateDoesNotExist)
 from django.template.loader import get_template_from_string
 from django.template.loader import template_source_loaders, make_origin
 from django.template.loader_tags import ExtendsNode
@@ -24,11 +23,6 @@ from django.utils.importlib import import_module
 
 register = Library()
 
-
-def get_source(source):
-    if getattr(source, '__iter__', None):
-        source = source[0]
-    return source
 
 def find_template_source(name, dirs=None, skip_template=None):
     # Calculate template_source_loaders the first time the function is executed
@@ -38,20 +32,20 @@ def find_template_source(name, dirs=None, skip_template=None):
     if template_source_loaders is None:
         loaders = []
         template_loaders = settings.TEMPLATE_LOADERS
-        if isinstance(template_loaders[0], tuple):
+        if isinstance(template_loaders[0], tuple) or isinstance(template_loaders[0], list):
             # django.template.loaders.cached.Loader. See template caching in Django docs
             template_loaders = template_loaders[0][1]
         for path in template_loaders:
             i = path.rfind('.')
-            module, attr = path[:i], path[i+1:]
+            module, attr = path[:i], path[i + 1:]
             try:
                 mod = import_module(module)
             except ImportError, e:
-                raise ImproperlyConfigured, 'Error importing template source loader %s: "%s"' % (module, e)
+                raise ImproperlyConfigured('Error importing template source loader %s: "%s"' % (module, e))
             try:
                 func = getattr(mod, attr)
             except AttributeError:
-                raise ImproperlyConfigured, 'Module "%s" does not define a "%s" callable template source loader' % (module, attr)
+                raise ImproperlyConfigured('Module "%s" does not define a "%s" callable template source loader' % (module, attr))
             if not func.is_usable:
                 import warnings
                 warnings.warn("Your TEMPLATE_LOADERS setting includes %r, but your Python installation doesn't support that type of template loading. Consider removing that line from TEMPLATE_LOADERS." % path)
@@ -62,8 +56,8 @@ def find_template_source(name, dirs=None, skip_template=None):
     for loader in template_source_loaders:
         try:
             source, display_name = loader(name, dirs)
-            if skip_template:
-                if display_name == skip_template.name:
+            if skip_template and skip_template.endswith(name):
+                if display_name == skip_template:
                     template_candidate = None
                     continue
                 if not template_candidate:
@@ -73,7 +67,7 @@ def find_template_source(name, dirs=None, skip_template=None):
         except TemplateDoesNotExist:
             pass
     if not template_candidate:
-        raise TemplateDoesNotExist, name
+        raise TemplateDoesNotExist(name)
     return template_candidate
 
 
@@ -84,12 +78,8 @@ class SmartExtendsNode(ExtendsNode):
             return "<SmartExtendsNode: extends %s>" % self.parent_name_expr.token
         return '<SmartExtendsNode: extends "%s">' % self.parent_name
 
-    def get_source(self):
-        source = getattr(self, 'source', None)
-        return get_source(source)
-
     def get_parent(self, context):
-        source = self.get_source()
+        origin, source = self.source
         if self.parent_name_expr:
             self.parent_name = self.parent_name_expr.resolve(context)
         parent = self.parent_name
@@ -97,20 +87,20 @@ class SmartExtendsNode(ExtendsNode):
             error_msg = "Invalid template name in 'extends' tag: %r." % parent
             if self.parent_name_expr:
                 error_msg += " Got this from the '%s' variable." % self.parent_name_expr.token
-            raise TemplateSyntaxError, error_msg
+            raise TemplateSyntaxError(error_msg)
         if hasattr(parent, 'render'):
-            return parent # parent is a Template object
+            return parent  # parent is a Template object
         try:
-            source, origin = find_template_source(parent, self.template_dirs, skip_template=source)
+            source, origin = find_template_source(parent, self.template_dirs, skip_template=origin.name)
         except TemplateDoesNotExist:
-            raise TemplateSyntaxError, "Template %r cannot be extended, because it doesn't exist" % parent
+            raise TemplateSyntaxError("Template %r cannot be extended, because it doesn't exist" % parent)
         else:
             return get_template_from_string(source, origin, parent)
 
     def render(self, context):
-        source = self.get_source()
-        if source and source.loadname == self.parent_name:
-            template = find_template_source(self.parent_name, skip_template=source)
+        origin, source = self.source
+        if origin and origin.loadname == self.parent_name:
+            template = find_template_source(self.parent_name, skip_template=origin.name)
             self.parent_name = template[1].name
         return super(SmartExtendsNode, self).render(context)
 
@@ -122,7 +112,7 @@ def do_smart_extends(parser, token):
     This tag may be used similarly to extends (django tag).
     This tag provides the possibility to extend to yourself without infinite
     recursion. It is possible for use a API function "find_template",
-    that skip the invoke template 
+    that skip the invoke template
     """
     bits = token.split_contents()
     if len(bits) != 2:
