@@ -97,7 +97,5 @@ If you set TEMPLATE_DEBUG = True in settings.py you must patch the django code. 
 Reported
 ========
 
- * Ticket in `Django <https://code.djangoproject.com/ticket/15053>`_
- * `Pull request <https://github.com/django/django/pull/217>`_
-
-
+ * `Ticket in Django trac <https://code.djangoproject.com/ticket/15053>`_
+ * `Pull request to Django repository <https://github.com/django/django/pull/217>`_
