@@ -1,5 +1,5 @@
 0.7.0 (2013-10-05)
-----------------
+------------------
 
 * Move the repository to github
 * Add example project
