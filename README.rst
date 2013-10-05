@@ -57,7 +57,7 @@ How to use
 This application is useful when you want to overwrite a template of a application in your project.
 Currently this in Django produce infinite recursion
 
-This is an example with django.contrib.admin app, but django-smart-extends works with any application, **this is not only to the admin site**. This is very useful if you use reusable django apps or some django CMS.
+This is an example with django.contrib.admin app, but django-smart-extends works with any application, **this is not only to the admin site**. This is very useful if you use reusable django apps or any CMS implemented in django.
 
 If you set OVERWRITE_EXTENDS = True
 
