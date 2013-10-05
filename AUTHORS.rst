@@ -1,1 +1,1 @@
-Pablo Martín Cobos <pmartin (_at_) yaco.es> <goinnn (_at_) gmail.com>
+Pablo Martín Cobos <goinnn (_at_) gmail.com>
