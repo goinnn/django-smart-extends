@@ -97,13 +97,6 @@ class SmartExtendsNode(ExtendsNode):
         else:
             return get_template_from_string(source, origin, parent)
 
-    def render(self, context):
-        origin, source = self.source
-        if origin and origin.loadname == self.parent_name:
-            template = find_template_source(self.parent_name, skip_template=origin.name)
-            self.parent_name = template[1].name
-        return super(SmartExtendsNode, self).render(context)
-
 
 def do_smart_extends(parser, token):
     """
