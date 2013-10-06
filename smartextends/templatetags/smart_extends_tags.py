@@ -79,7 +79,7 @@ class SmartExtendsNode(ExtendsNode):
         return '<SmartExtendsNode: extends %s>' % self.parent_name.token
 
     def get_parent(self, context):
-        parent = getattr(self, 'full_parent_name', self.parent_name.resolve(context))
+        parent = self.parent_name.resolve(context)
         if not parent:
             error_msg = "Invalid template name in 'extends' tag: %r." % parent
             if self.parent_name.filters or\
