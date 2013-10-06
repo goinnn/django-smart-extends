@@ -152,6 +152,8 @@ LOGGING = {
         },
     }
 }
+import django
+
 
 # dbtemplates configuration. This is to test the smartextends with three TEMPLATE_LOADERS installed
 
@@ -168,9 +170,6 @@ except ImportError:
     pass
 
 # Custom settings to the different django versions
-
-
-import django
 
 if django.VERSION[0] >= 1 and django.VERSION[1] >= 4:
     TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.tz',)
