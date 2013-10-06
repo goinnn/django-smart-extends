@@ -1,0 +1,14 @@
+[{
+    "pk": 1, 
+    "model": "dbtemplates.template", 
+    "fields": {
+        "content": "{% smart_extends \"admin/change_form.html\" %}\r\n\r\n{% block content_title %}\r\n    {{ block.super }}\r\n    <p style=\"color:blue\">\r\n        Overwriting the change_form template using <a href=\"https://pypi.python.org/pypi/django-dbtemplates\" target=\"_blank\">dbtemplate</a> without to have to copy every line of this template in our database (without repeating code).\r\n        <a href=\"/admin/dbtemplates/template/1/\" target=\"_blank\">See the code</a>\r\n    </p>\r\n{% endblock %}", 
+        "sites": [
+            1
+        ], 
+        "last_changed": "2013-10-06 05:21:27.568", 
+        "name": "admin/change_form.html", 
+        "creation_date": "2013-10-06T04:56:37"
+    }
+}
+]
