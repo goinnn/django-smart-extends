@@ -117,8 +117,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'example.app',
-    'smartextends'
+    'smartextends',
 )
+
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -152,7 +153,18 @@ LOGGING = {
     }
 }
 
+# dbtemplates configuration. This is to test the smartextends with three TEMPLATE_LOADERS installed
+
+try:
+    import dbtemplates
+    INSTALLED_APPS += ('dbtemplates',
+                       'example.dbtemplates_fixtures')
+    TEMPLATE_LOADERS = ('dbtemplates.loader.Loader',) + TEMPLATE_LOADERS
+except ImportError:
+    pass
+
 # Custom settings to the different django versions
+
 
 import django
 
