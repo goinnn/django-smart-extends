@@ -57,7 +57,6 @@ def find_template(name, dirs=None, skip_template=None):
             if loader is not None:
                 loaders.append(loader)
         template_source_loaders = tuple(loaders)
-    template_candidate = None
     tsl_index = -1
     if skip_template and skip_template.loadname == name:
         for i, template_source_loader in enumerate(template_source_loaders):
@@ -67,16 +66,10 @@ def find_template(name, dirs=None, skip_template=None):
     for loader in template_source_loaders[tsl_index + 1:]:
         try:
             source, display_name = loader(name, dirs)
-            if tsl_index is not None:
-                if not template_candidate:
-                    template_candidate = (source, make_origin(display_name, loader, name, dirs))
-            else:
-                return (source, make_origin(display_name, loader, name, dirs))
+            return (source, make_origin(display_name, loader, name, dirs))
         except TemplateDoesNotExist:
             pass
-    if not template_candidate:
-        raise TemplateDoesNotExist(name)
-    return template_candidate
+    raise TemplateDoesNotExist(name)
 
 
 class SmartExtendsNode(ExtendsNode):
