@@ -53,13 +53,13 @@ def find_template_source(name, dirs=None, skip_template=None):
                 loaders.append(func)
         template_source_loaders = tuple(loaders)
     template_candidate = None
-    for loader in template_source_loaders:
+    tsl_index = -1
+    if skip_template and skip_template.loadname == name:
+        tsl_index = template_source_loaders.index(skip_template.loader)
+    for loader in template_source_loaders[tsl_index + 1:]:
         try:
             source, display_name = loader(name, dirs)
-            if skip_template and skip_template.endswith(name):
-                if display_name == skip_template:
-                    template_candidate = None
-                    continue
+            if tsl_index >= 0:
                 if not template_candidate:
                     template_candidate = (source, make_origin(display_name, loader, name, dirs))
             else:
@@ -91,7 +91,7 @@ class SmartExtendsNode(ExtendsNode):
         if hasattr(parent, 'render'):
             return parent  # parent is a Template object
         try:
-            source, origin = find_template_source(parent, self.template_dirs, skip_template=origin.name)
+            source, origin = find_template_source(parent, self.template_dirs, skip_template=origin)
         except TemplateDoesNotExist:
             raise TemplateSyntaxError("Template %r cannot be extended, because it doesn't exist" % parent)
         else:
