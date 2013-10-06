@@ -58,15 +58,16 @@ def find_template(name, dirs=None, skip_template=None):
                 loaders.append(loader)
         template_source_loaders = tuple(loaders)
     template_candidate = None
-    for loader in template_source_loaders:
+    tsl_index = -1
+    if skip_template and skip_template.loadname == name:
+        for i, template_source_loader in enumerate(template_source_loaders):
+            if isinstance(skip_template.loader.__self__, template_source_loader.__class__):
+                tsl_index = i
+                break
+    for loader in template_source_loaders[tsl_index + 1:]:
         try:
             source, display_name = loader(name, dirs)
-            if skip_template and skip_template.endswith(name):
-                extends_tags = source.nodelist[0]
-                extends_tags_origin, extends_tags_source = extends_tags.source
-                if extends_tags_origin.name == skip_template:
-                    template_candidate = None
-                    continue
+            if tsl_index is not None:
                 if not template_candidate:
                     template_candidate = (source, make_origin(display_name, loader, name, dirs))
             else:
@@ -97,7 +98,7 @@ class SmartExtendsNode(ExtendsNode):
         if hasattr(parent, 'render'):
             return parent  # parent is a Template object
         origin, source = self.source
-        return get_template(parent, skip_template=origin.name)
+        return get_template(parent, skip_template=origin)
 
 
 def do_smart_extends(parser, token):
