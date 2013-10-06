@@ -152,22 +152,8 @@ LOGGING = {
         },
     }
 }
+
 import django
-
-
-# dbtemplates configuration. This is to test the smartextends with three TEMPLATE_LOADERS installed
-
-try:
-    import dbtemplates
-    INSTALLED_APPS += ('dbtemplates',
-                       'example.dbtemplates_fixtures')
-    TEMPLATE_LOADERS = ('dbtemplates.loader.Loader',) + TEMPLATE_LOADERS
-    if django.VERSION[0] >= 1 and django.VERSION[1] <= 2:
-        DBTEMPLATES_CACHE_BACKEND = "locmem://"
-    else:
-        DBTEMPLATES_USE_CODEMIRROR = True
-except ImportError:
-    pass
 
 # Custom settings to the different django versions
 
@@ -234,3 +220,22 @@ if django.VERSION[0] >= 1 and django.VERSION[1] <= 1:
         'django.template.loaders.app_directories.load_template_source',
     #     'django.template.loaders.eggs.load_template_source',
     )
+
+# dbtemplates configuration. This is to test the smartextends with three TEMPLATE_LOADERS installed
+
+try:
+    import dbtemplates
+    INSTALLED_APPS += ('dbtemplates',
+                       'example.dbtemplates_fixtures')
+
+    if django.VERSION[0] >= 1 and django.VERSION[1] >= 2:
+        TEMPLATE_LOADERS = ('dbtemplates.loader.Loader',) + TEMPLATE_LOADERS
+    else:
+        TEMPLATE_LOADERS = ('dbtemplates.loader.load_template_source',) + TEMPLATE_LOADERS
+
+    if django.VERSION[0] >= 1 and django.VERSION[1] <= 2:
+        DBTEMPLATES_CACHE_BACKEND = "locmem://"
+    else:
+        DBTEMPLATES_USE_CODEMIRROR = True
+except ImportError:
+    pass
