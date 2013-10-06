@@ -160,6 +160,10 @@ try:
     INSTALLED_APPS += ('dbtemplates',
                        'example.dbtemplates_fixtures')
     TEMPLATE_LOADERS = ('dbtemplates.loader.Loader',) + TEMPLATE_LOADERS
+    if django.VERSION[0] >= 1 and django.VERSION[1] <= 2:
+        DBTEMPLATES_CACHE_BACKEND = "locmem://"
+    else:
+        DBTEMPLATES_USE_CODEMIRROR = True
 except ImportError:
     pass
 
