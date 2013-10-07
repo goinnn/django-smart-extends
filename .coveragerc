@@ -1,4 +1,5 @@
 [run]
+source = smartextends
 omit =
     example/*
 
