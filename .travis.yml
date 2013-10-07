@@ -4,9 +4,9 @@ install:
   - pip install -q --use-mirrors tox python-coveralls
 
 script:
-  - tox
+  - tox --with-coverage
 after_success:
-  - coveralls -c coverage.rc
+  - coveralls
 
 notifications:
   email:
