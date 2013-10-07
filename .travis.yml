@@ -6,7 +6,7 @@ install:
 script:
   - tox
 after_success:
-  - coveralls -c coverage.rc
+  - coveralls
 
 notifications:
   email:
