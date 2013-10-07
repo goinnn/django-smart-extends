@@ -1,5 +1,5 @@
 [run]
-source = smartextends
+source = ./smartextends
 omit =
     example/*
 
