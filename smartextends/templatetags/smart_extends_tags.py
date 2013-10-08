@@ -60,8 +60,15 @@ def find_template(name, dirs=None, skip_template=None):
     tsl_index = -1
     if skip_template and skip_template.loadname == name:
         for i, template_source_loader in enumerate(template_source_loaders):
-            if isinstance(skip_template.loader.__self__, template_source_loader.__class__):
-                tsl_index = i
+            if hasattr(template_source_loader, 'load_template_source'):
+                if (hasattr(skip_template.loader, '__self__') and
+                   skip_template.loader.__self__.__class__ == template_source_loader.__class__):
+                    tsl_index = i
+            else:  # old way to do template loaders
+                if skip_template.loader == template_source_loader:
+                    tsl_index = i
+
+            if tsl_index != -1:
                 break
     for loader in template_source_loaders[tsl_index + 1:]:
         try:
