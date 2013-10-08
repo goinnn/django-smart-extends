@@ -33,6 +33,6 @@ else:
 
 
 if django.VERSION[0] == 1 and django.VERSION[1] <= 5:
-    management.call_command('test', 'app', )
+    management.call_command('test', 'app')
 else:
     management.call_command('test', 'example.app')
