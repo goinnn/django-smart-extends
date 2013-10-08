@@ -1,10 +1,12 @@
 language: python
 
 install:
-  - pip install -q --use-mirrors tox
+  - pip install -q --use-mirrors tox python-coveralls
 
 script:
   - tox
+after_success:
+  - coveralls
 
 notifications:
   email:
