@@ -7,7 +7,7 @@ django-smart-extends
 .. image:: https://api.travis-ci.org/goinnn/django-smart-extends.png?branch=master
     :target: https://travis-ci.org/goinnn/django-smart-extends
 
-.. image:: https://coveralls.io/repos/goinnn/django-smart-extends/badge.png 
+.. image:: https://coveralls.io/repos/goinnn/django-smart-extends/badge.png?branch=master
     :target: https://coveralls.io/r/goinnn/django-smart-extends
 
 .. image:: https://badge.fury.io/py/django-smart-extends.png
