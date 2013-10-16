@@ -18,6 +18,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.template.base import TemplateSyntaxError, TemplateDoesNotExist
 from django.template.loader_tags import do_extends
 from django.test import TestCase
 from django.test.client import Client
@@ -55,6 +56,13 @@ class SmartExtendsCase(TestCase):
         if INSTALLED_DB_TEMPLATES:
             str_extension_db_templates = 'Overwriting the change_form template using '
             self.assertEqual(str_extension_db_templates in response.content.decode('utf-8'), True)
+
+    def check_error(self, client, url, exception):
+        try:
+            self.check_url(client, url)
+            self.assertEqual(False, True)
+        except exception:
+            pass
 
     def add_cache_template(self):
         from django.template import loader
@@ -139,8 +147,39 @@ class SmartExtendsCase(TestCase):
         else:
             settings.TEMPLATE_LOADERS = ('example.app.filesystem.load_template_source',) + settings.TEMPLATE_LOADERS[1:]
         loader.template_source_loaders = None
+        self.test_smart_extends_cached_template_loaders()
+        settings.TEMPLATE_LOADERS = template_loaders
+
+    def test_smart_extends_errors(self):
+        if not INSTALLED_DB_TEMPLATES:
+            return
         client = self.__client_login()
         user_pk = client.session.get('_auth_user_id')
         url = reverse('admin:auth_user_change', args=(user_pk,))
-        self.check_url(client, url)
-        settings.TEMPLATE_LOADERS = template_loaders
+        from dbtemplates.models import Template
+        template = Template.objects.get(name='admin/change_form.html')
+        # First error
+        template.content = template.content.replace('{% smart_extends "admin/change_form.html" %}',
+                                                    '{% smart_extends "admin/change_form.html" "hello" %}')
+        template.save()
+        self.check_error(client, url, TemplateSyntaxError)
+        template.content = template.content.replace('{% smart_extends "admin/change_form.html" "hello" %}',
+                                                    '{% smart_extends "admin/change_form.html" %}')
+        template.save()
+        # Second error
+        template.content = template.content.replace('{% smart_extends "admin/change_form.html" %}',
+                                                    '{% smart_extends "admin/change_form.html" %}{% smart_extends "admin/change_form.html" %}')
+        template.save()
+        self.check_error(client, url, TemplateSyntaxError)
+        template.content = template.content.replace('{% smart_extends "admin/change_form.html" %}{% smart_extends "admin/change_form.html" %}',
+                                                    '{% smart_extends "admin/change_form.html" %}')
+        template.save()
+
+        # Third error
+        template.content = template.content.replace('{% smart_extends "admin/change_form.html" %}',
+                                                    '{% smart_extends "admin/change_form2.html" %}')
+        template.save()
+        self.check_error(client, url, TemplateDoesNotExist)
+        template.content = template.content.replace('{% smart_extends "admin/change_form2.html" %}',
+                                                    '{% smart_extends "admin/change_form.html" %}')
+        template.save()
