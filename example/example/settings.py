@@ -84,16 +84,6 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-#TEMPLATE_LOADERS = [
-        #('django.template.loaders.cached.Loader',(
-         #'django.template.loaders.filesystem.Loader',
-         #'django.template.loaders.app_directories.Loader',
-         ##     'django.template.loaders.eggs.Loader',
-    #))
-    #]
-
-#OVERWRITE_EXTENDS = True
-
 ALLOWED_HOSTS = [
     'localhost',
 ]
@@ -239,3 +229,6 @@ try:
         DBTEMPLATES_USE_CODEMIRROR = True
 except ImportError:
     pass
+
+#TEMPLATE_LOADERS = (('smartextends.loaders.cached.Loader', (TEMPLATE_LOADERS)),)
+#OVERWRITE_EXTENDS = True
