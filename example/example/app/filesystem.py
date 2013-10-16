@@ -1,6 +1,7 @@
 """
 Wrapper for loading templates from the filesystem.
 """
+import sys
 
 from django.conf import settings
 from django.template import TemplateDoesNotExist
@@ -30,12 +31,15 @@ def load_template_source(template_name, template_dirs=None):
     tried = []
     for filepath in get_template_sources(template_name, template_dirs):
         try:
-            return (open(filepath).read().decode(settings.FILE_CHARSET), filepath)
+            if sys.version_info[0] == 2:
+                return (open(filepath).read().decode(settings.FILE_CHARSET), filepath)
+            else:
+                return (open(filepath).read(), filepath)
         except IOError:
             tried.append(filepath)
     if tried:
         error_msg = "Tried %s" % tried
     else:
         error_msg = "Your TEMPLATE_DIRS setting is empty. Change it to point to at least one template directory."
-    raise TemplateDoesNotExist, error_msg
+    raise TemplateDoesNotExist(error_msg)
 load_template_source.is_usable = True
