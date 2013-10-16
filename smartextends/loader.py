@@ -39,20 +39,7 @@ def find_template(name, dirs=None, skip_template=None):
     and a origin object. Skipping the current template (skip_template),
     this param contain the absolute path of the template.
     """
-    from django.template.loader import find_template_loader
     from django.template.loader import template_source_loaders
-    # Calculate template_source_loaders the first time the function is executed
-    # because putting this logic in the module-level namespace may cause
-    # circular import errors. See Django ticket #1292.
-    global template_source_loaders
-    if template_source_loaders is None:
-        loaders = []
-        template_loaders = settings.TEMPLATE_LOADERS
-        for loader_name in template_loaders:
-            loader = find_template_loader(loader_name)
-            if loader is not None:
-                loaders.append(loader)
-        template_source_loaders = tuple(loaders)
     setattr(name, 'skip_template', skip_template)
     needs_smart_extends = skip_template.loadname == name
     found_template_loader = False
