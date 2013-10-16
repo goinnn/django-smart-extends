@@ -17,7 +17,8 @@ from django.conf import settings
 
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template_from_string
-from django.template.loader import template_source_loaders, make_origin
+from django.template.loader import make_origin
+from django.template.loaders.cached import Loader as CachedLoader
 
 
 def get_template(template_name, skip_template=None):
@@ -39,6 +40,7 @@ def find_template(name, dirs=None, skip_template=None):
     this param contain the absolute path of the template.
     """
     from django.template.loader import find_template_loader
+    from django.template.loader import template_source_loaders
     # Calculate template_source_loaders the first time the function is executed
     # because putting this logic in the module-level namespace may cause
     # circular import errors. See Django ticket #1292.
@@ -46,28 +48,23 @@ def find_template(name, dirs=None, skip_template=None):
     if template_source_loaders is None:
         loaders = []
         template_loaders = settings.TEMPLATE_LOADERS
-        if isinstance(template_loaders[0], tuple) or isinstance(template_loaders[0], list):
-            # django.template.loaders.cached.Loader. See template caching in Django docs
-            template_loaders = template_loaders[0][1]
         for loader_name in template_loaders:
             loader = find_template_loader(loader_name)
             if loader is not None:
                 loaders.append(loader)
         template_source_loaders = tuple(loaders)
-    tsl_index = -1
-    if skip_template and skip_template.loadname == name:
-        for i, template_source_loader in enumerate(template_source_loaders):
-            if hasattr(template_source_loader, 'load_template_source'):
+    setattr(name, 'skip_template', skip_template)
+    needs_smart_extends = skip_template.loadname == name
+    found_template_loader = False
+    for loader in template_source_loaders:
+        if needs_smart_extends and not found_template_loader and not isinstance(loader, CachedLoader):
+            if hasattr(loader, 'load_template_source'):
                 if (hasattr(skip_template.loader, '__self__') and
-                   skip_template.loader.__self__.__class__ == template_source_loader.__class__):
-                    tsl_index = i
+                   skip_template.loader.__self__.__class__ == loader.__class__):
+                    found_template_loader = True
             else:  # old way to do template loaders
-                if skip_template.loader == template_source_loader:
-                    tsl_index = i
-
-            if tsl_index != -1:
-                break
-    for loader in template_source_loaders[tsl_index + 1:]:
+                found_template_loader = skip_template.loader == loader
+            continue
         try:
             source, display_name = loader(name, dirs)
             return (source, make_origin(display_name, loader, name, dirs))
